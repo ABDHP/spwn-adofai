@@ -1,7 +1,8 @@
 {
-	"bpm": 96.5,
+	"bpm": 96.5, 
 	"misses": 5,
 	"angle": 45,
+	"zoom" : 0.6,
 	"path": "dddddddddddddddddsaaaaaasdddddddddsaaasdwaaavbddwaaaaaaaaazdeqaazdeqa",
 	"events": [
 		{ "floor": 17, "evType": "speed", "bpm": 193 },
