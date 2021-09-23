@@ -9,7 +9,7 @@ You have to *click* when one of the circles arrives on a tile. Timings are flexi
 
 If your click is not in the timing, you *miss*. You know you missed if BG pulses yellow.
 
-If you didn't click the tile in timing (or clicked too early resulting in a *miss*), you *die* (+ BG pilses red). Also, you *die*, when a certain number of *misses* is reached.
+If you didn't click the tile in timing (or clicked too early resulting in a *miss*), you *die* (+ BG pulses red). Also, you *die*, when a certain number of *misses* is reached.
 
 When you click on the last tile, level is *completed*, and you have to wait two more seconds. But be careful: you can *miss* and *die* due to misses even when level is *completed* (i think so).
 
@@ -51,11 +51,11 @@ In ADOFAI, we have 16 directions a tile can go, an each of them has a letter, re
 #### Directions with angle of 45 degrees:
 * *w* = up
 * e
-* *a* = left
+* *d* = left
 * c
 * *s* = down
 * z
-* *d* = right
+* *a* = right
 * q
 * *w*, again
 
@@ -63,13 +63,13 @@ In ADOFAI, we have 16 directions a tile can go, an each of them has a letter, re
 * *w* = up
 * y
 * j
-* *a* = left
+* *d* = left
 * m
 * b
 * *s* = down
 * v
 * n
-* *d* = right
+* *a* = right
 * h
 * t
 * *w*, again
