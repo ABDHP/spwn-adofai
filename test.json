@@ -1,0 +1,12 @@
+{
+	"bpm": 96.5,
+	"misses": 5,
+	"angle": 45,
+	"path": "dddddddddddddddddsaaaaaasdddddddddsaaasdwaaavbddwaaaaaaaaazdeqaazdeqa",
+	"events": [
+		{ "floor": 17, "evType": "speed", "bpm": 193 },
+		{ "floor": 19, "evType": "twirl" },
+		{ "floor": 36, "evType": "twirl" },
+		{ "floor": 47, "evType": "speed", "bpm": 96.5}
+	]
+}

@@ -1,0 +1,22 @@
+type @line
+
+impl @line {
+	new: (k: @number, b: @number) { return @line::{ k, b } },
+	get_y: (self, x) => self.k * x + self.b,
+	get_x: (self, y) {
+		$.assert(self.k as @bool)
+		return (y - self.b) / self.k
+	},
+}
+
+line_by_points = (p1: [@number] , p2: [@number]) {
+	x1 = p1[0]
+	y1 = p1[1]
+	x2 = p2[0]
+	y2 = p2[1]
+	k = (y1 - y2) / (x1 - x2)
+	b =  y1 - x1 * k
+	return @line::new(k, b)
+}
+
+return {line_by_points}
