@@ -51,11 +51,11 @@ In ADOFAI, we have 16 directions a tile can go, an each of them has a letter, re
 #### Directions with angle of 45 degrees:
 * *w* = up
 * e
-* *d* = left
+* *d* = right
 * c
 * *s* = down
 * z
-* *a* = right
+* *a* = left
 * q
 * *w*, again
 
@@ -63,13 +63,13 @@ In ADOFAI, we have 16 directions a tile can go, an each of them has a letter, re
 * *w* = up
 * y
 * j
-* *d* = left
+* *d* = right
 * m
 * b
 * *s* = down
 * v
 * n
-* *a* = right
+* *a* = left
 * h
 * t
 * *w*, again
