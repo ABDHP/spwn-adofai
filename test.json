@@ -3,6 +3,7 @@
 	"misses": 5,
 	"angle": 45,
 	"zoom" : 0.6,
+	"offset": 1,
 	"path": "dddddddddddddddddsaaaaaasdddddddddsaaasdwaaavbddwaaaaaaaaazdeqaazdeqa",
 	"events": [
 		{ "floor": 17, "evType": "speed", "bpm": 193 },

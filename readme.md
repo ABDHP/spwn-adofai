@@ -15,7 +15,6 @@ When you click on the last tile, level is *completed*, and you have to wait two 
 
 ## Requirements
 
-* Put name of your `.json` file into variable in line 6
 * `--allow readfile`
 * Level: you don't need to place *any* blocks in editor. The only requirements are:
 	* Colors:
@@ -37,6 +36,8 @@ The root object has these keys (\* means it's necessary):
 * zoom :number - the objects in the level (and distances) are as big as this number is - default is 1
 * \*path :string - defines the path of level
 * \*events :array - array of events like bpm changing or twirl
+* offset :number - offset in seconds (setting this to 0 is a bad idea) - default value is whatever needed to level start in one 180deg beat
+* auto :bool - disables possibillity of dying - default  is false
 
 ### Path
 
@@ -87,3 +88,10 @@ This object has two properties:
 #### Types
 * speed - changes the current bpm, starting from the tile it's on and until another speed change or level end. **Requires additional parameter in the event object**: bpm :number
 * twirl - changes the direction of player rotation
+
+## converter.spwn
+
+Do you have your ald (or maybe not) levels from the original adofai? If yes, you can use my converter to convert these to my adofai!
+
+
+See `converter.spwn`

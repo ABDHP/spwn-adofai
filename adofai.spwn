@@ -3,7 +3,8 @@ extract obj_ids
 extract $
 extract import './line.spwn'
 
-filename = 'test.json'
+input = $.get_input("Enter filename: ")
+filename = input.substr(0, input.length - 1)
 
 // constants
 
@@ -35,6 +36,9 @@ let data = readfile(filename, 'json')
 	for i in ..data.events.length { if data.events[i].evType == 'speed' { data.events[i].bpm *= speed } }
 }()
 zoom = data.zoom if data has "zoom" else 1
+
+cus_of = data has 'offset'
+offset = data.offset - 0.05 if cus_of else null
 
 // macros
 
@@ -270,7 +274,8 @@ for i in 1..path_strarr.length {
 			}
 		}
 	}
-	uo.deg = fix_dir(180 + (-1 if uo.reverse else 1) * (directions[u] - (directions[path_strarr[i-1]] if i > 0 else 90)))
+	let uo.deg = fix_dir(180 + (-1 if uo.reverse else 1) * (directions[u] - (directions[path_strarr[i-1]] if i > 0 else 90)))
+	if uo.deg == 0 { uo.deg += 360 }
 	gp.push(uo)
 }
 
@@ -280,7 +285,15 @@ let stops = []
 	let totDur = 0
 	let cx = 0
 	let cy = 0
-	for i in ..gp.length {
+	if cus_of {
+		deg = round(3 * gp[0].bpm * offset)
+		3g.rotate(2g, fix_dir(180 - deg))
+		func = rotate(1, gp[0].bpm, deg, gp[0].reverse)[0]
+		stops.push(func)
+		call_with_delay(0.05, func)
+		totDur = offset + 0.05
+	}
+	for i in (1 if cus_of else 0)..gp.length {
 		last = i + 1 == gp.length
 		u = gp[i]
 		[func, dur] = rotate(1 - (i % 2), u.bpm, u.deg, u.reverse)
@@ -338,50 +351,52 @@ lose = !{
 	}
 }
 
-(){
-	angle = data.angle if data has 'angle' else 30
-	let totWait = 0
-	w = (time, call, func) {
-		totWait += time
-		if call {
-			call_with_delay(totWait, func)
-			stops.push(func)
-		}
-	}
-	click_timing_start = [
-		!{ if clicks[0] < 2 { clicks[0]++ } },
-		!{ if clicks[1] < 2 { clicks[1]++ } },
-		!{ if clicks[2] < 2 { clicks[2]++ } },
-	]
-	click_timing_end   = [
-		!{ if clicks[0] > 1 { lose! } },
-		!{ if clicks[1] > 1 { lose! } },
-		!{ if clicks[2] > 1 { lose! } },
-	]
-	for i in ..gp.length {
-		u = gp[i]
-		w(angle / 3 / u.bpm, i != 0, click_timing_end[(i - 1) % 3])
-		w((u.deg - 2 * angle) / (3 * u.bpm), true, click_timing_start[i % 3])
-		w(angle / 3 / u.bpm, false, !{})
-	}
-	li = gp.length - 1
-	w(angle / 3 / gp[li].bpm, true, click_timing_end[li % 3])
-}()
-
 hide_player()
 toggle_bg_effect();
 1g.move(25, 50)
 1g.lock_to_player(true, false)
 
-[[on(touch())]] !{
-	if clicks[index.to_const(..3)] == 2 {
-		clicks[index.to_const(..3)]--
-		index++
-		if index >= 3 { index -= 3 }
-	} else {
-		misses--
-		if misses == 0 { lose! }
-		else { miss! }
+if (!data.auto if data has 'auto' else true) {
+	(){
+		angle = data.angle if data has 'angle' else 30
+		let totWait = 0
+		if cus_of { totWait = offset - 60 / gp[0].bpm }
+		w = (time, call, func) {
+			totWait += time
+			if call {
+				call_with_delay(totWait, func)
+				stops.push(func)
+			}
+		}
+		click_timing_start = [
+			!{ if clicks[0] < 2 { clicks[0]++ } },
+			!{ if clicks[1] < 2 { clicks[1]++ } },
+			!{ if clicks[2] < 2 { clicks[2]++ } },
+		]
+		click_timing_end   = [
+			!{ if clicks[0] > 1 { lose! } },
+			!{ if clicks[1] > 1 { lose! } },
+			!{ if clicks[2] > 1 { lose! } },
+		]
+		for i in ..gp.length {
+			u = gp[i]
+			w(angle / 3 / u.bpm, i != 0, click_timing_end[(i - 1) % 3])
+			w((u.deg - 2 * angle) / (3 * u.bpm), true, click_timing_start[i % 3])
+			w(angle / 3 / u.bpm, false, !{})
+		}
+		li = gp.length - 1
+		w(angle / 3 / gp[li].bpm, true, click_timing_end[li % 3])
+	}()
+
+	[[on(touch())]] !{
+		if clicks[index.to_const(..3)] == 2 {
+			clicks[index.to_const(..3)]--
+			index++
+			if index >= 3 { index -= 3 }
+		} else {
+			misses--
+			if misses == 0 { lose! }
+			else { miss! }
+		}
 	}
 }
-

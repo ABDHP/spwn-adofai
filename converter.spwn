@@ -1,0 +1,87 @@
+#[no_level]
+
+output = "output.json"
+
+input = $.get_input("Enter filename: ")
+filename = input.substr(0, input.length - 1)
+source = $.readfile(filename, 'json')
+
+$.assert(source has 'settings')
+$.assert(source has 'pathData')
+$.assert(source has 'actions' )
+
+$.assert(source.settings.type == @dictionary)
+$.assert(source.pathData.type == @string)
+$.assert(source.actions .type == @array )
+
+settings = source.settings
+
+$.assert(settings has 'bpm' )
+$.assert(settings has 'zoom')
+$.assert(settings.bpm .type == @number)
+$.assert(settings.zoom.type == @number)
+
+let object = "{"
+
+object +=  "\n\t\"bpm\": "  +        settings.bpm   as @string
+object += ",\n\t\"zoom\": " + (100 / settings.zoom) as @string
+
+directions = {
+	U: 'w',	Y: 'y',	E: 'e', J: 'j',
+	R: 'd', M: 'm', C: 'c', B: 'b',
+	D: 's', V: 'h', Z: 'z', N: 'n',
+	L: 'a', H: 'v', Q: 'q', T: 't',
+	F: 'v' // don't ask about this one
+}
+
+let path = ""
+for d in source.pathData.split('') {
+	$.assert(directions has d)
+	path += directions[d]
+}
+
+object +=   ",\n\t\"path\": \"" + path
+object += "\",\n\t\"events\": ["
+
+speedtypes = ['Bpm', 'Multiplier']
+let i = 0
+let cur_bpm = settings.bpm
+for e in source.actions {
+	$.assert(e.type == @dictionary)
+	$.assert(e has 'eventType')
+	$.assert(e.eventType.type == @string)
+	switch e.eventType {
+		case 'SetSpeed': (){
+			$.assert(e has 'floor')
+			$.assert(e.floor.type == @number)
+			$.assert(e has 'speedType')
+			st = e.speedType
+			$.assert(st.type == @string)
+			$.assert(speedtypes has st)
+			bpm = switch speedtypes.index(st) {
+				case 0: (){ // bpm
+					$.assert(e has 'beatsPerMinute')
+					$.assert(e.beatsPerMinute.type == @number)
+					return e.beatsPerMinute
+				}()
+				case 1: (){ // multiplier
+					$.assert(e has 'bpmMultiplier')
+					$.assert(e.bpmMultiplier.type == @number)
+					return cur_bpm * e.bpmMultiplier
+				}()
+			}
+			cur_bpm = bpm
+			object += ("," if i > 0 else "") +  "\n\t\t{ \"floor\": " + e.floor as @string + ", \"evType\": \"speed\", \"bpm\": " + bpm as @string + " }"
+			i++
+		}()
+		case 'Twirl': (){
+			$.assert(e has 'floor')
+			$.assert(e.floor.type == @number)
+			object += ("," if i > 0 else "") +  "\n\t\t{ \"floor\": " + e.floor as @string + ", \"evType\": \"twirl\" }"
+			i++ 
+		}()
+	}
+}
+
+object += "\n\t]\n}"
+$.writefile(output, object)
