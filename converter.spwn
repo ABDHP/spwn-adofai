@@ -16,15 +16,15 @@ $.assert(source.actions .type == @array )
 
 settings = source.settings
 
-$.assert(settings has 'bpm' )
-$.assert(settings has 'zoom')
-$.assert(settings.bpm .type == @number)
-$.assert(settings.zoom.type == @number)
+$.assert(settings has 'bpm'   )
+$.assert(settings has 'zoom'  )
+$.assert(setiings has 'offset')
 
 let object = "{"
 
-object +=  "\n\t\"bpm\": "  +        settings.bpm   as @string
-object += ",\n\t\"zoom\": " + (100 / settings.zoom) as @string
+object +=  "\n\t\"bpm\": "    +        settings.bpm           as @string
+object += ",\n\t\"zoom\": "   + (100 / settings.zoom)         as @string
+object += ",\n\t\"offset\": " +        settings.offset / 1000 as @string
 
 directions = {
 	U: 'w',	Y: 'y',	E: 'e', J: 'j',
@@ -49,24 +49,19 @@ let cur_bpm = settings.bpm
 for e in source.actions {
 	$.assert(e.type == @dictionary)
 	$.assert(e has 'eventType')
-	$.assert(e.eventType.type == @string)
 	switch e.eventType {
 		case 'SetSpeed': (){
 			$.assert(e has 'floor')
-			$.assert(e.floor.type == @number)
 			$.assert(e has 'speedType')
 			st = e.speedType
-			$.assert(st.type == @string)
 			$.assert(speedtypes has st)
 			bpm = switch speedtypes.index(st) {
 				case 0: (){ // bpm
 					$.assert(e has 'beatsPerMinute')
-					$.assert(e.beatsPerMinute.type == @number)
 					return e.beatsPerMinute
 				}()
 				case 1: (){ // multiplier
 					$.assert(e has 'bpmMultiplier')
-					$.assert(e.bpmMultiplier.type == @number)
 					return cur_bpm * e.bpmMultiplier
 				}()
 			}
@@ -76,7 +71,6 @@ for e in source.actions {
 		}()
 		case 'Twirl': (){
 			$.assert(e has 'floor')
-			$.assert(e.floor.type == @number)
 			object += ("," if i > 0 else "") +  "\n\t\t{ \"floor\": " + e.floor as @string + ", \"evType\": \"twirl\" }"
 			i++ 
 		}()

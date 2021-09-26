@@ -15,3 +15,8 @@
 	* `auto`
 * `converter.spwn` + md
 * Changelog
+
+# v0.3 -> v0.3.1
+
+* Made converter support offset (forgot about it)
+* Reduced the number of asserts in converter (still too many)
